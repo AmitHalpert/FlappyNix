@@ -1,28 +1,25 @@
-import java.awt.EventQueue
-import javax.swing.JFrame
+import java.awt.Color
+import java.awt.Graphics
+import kotlin.math.pow
+import kotlin.math.sqrt
 
-
-class FlappyNix : JFrame() {
-    init {
-        this.initNixerGame()
+class FlappyNix(var x: Int, var y: Int, var width: Int, var color: Color, var panel: GameScreen) : Thread() {
+    fun draw(g: Graphics) {
+        g.color = color
+        g.fillOval(x - width / 2, y - width / 2, width, width)
     }
 
-    private fun initNixerGame() {
-        this.add(GameScreen())
-        this.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        this.title = "NixerBird"
-        this.isResizable = false
-        this.pack()
-        this.setLocationRelativeTo(null)
-        this.isVisible = true
-    }
+    override fun run() {
+        var dirx = 6
+        while (true) {
+                x += dirx
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            EventQueue.invokeLater {
-                FlappyNix()
-            }
+
+                try {
+                    sleep(7)
+                } catch (e: InterruptedException) {
+                }
+
         }
     }
 }

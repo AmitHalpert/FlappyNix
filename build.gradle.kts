@@ -25,5 +25,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("FlappyNix")
+    mainClass.set("GameScreen")
 }

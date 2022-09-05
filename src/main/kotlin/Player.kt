@@ -1,25 +1,30 @@
-import java.awt.*
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
+import java.awt.Graphics
+import java.awt.Image
 import javax.swing.ImageIcon
-import javax.swing.JPanel
 
-class Player{
-
-    var PlayerY = 0;
-    val JumpForce = 300
-    var PlayerImage: Image? = null
-
+class Player(var panel: GameScreen) : Thread() {
+    var x = 0
+    var y = 0
+    var size = 50
+    var ballImage: Image
 
     init {
-        loadImages()
+        val img = ImageIcon("src/main/resources/nix.png")
+        ballImage = img.image
+        start()
     }
 
-    private fun loadImages() {
-
-        val iid = ImageIcon("src/main/resources/nix.png")
-        PlayerImage = iid.image
-
+    override fun run() {
+        while (true) {
+            try {
+                sleep(10)
+            } catch (e: InterruptedException) {
+            }
+            panel.repaint()
+        }
     }
 
+    fun draw(g: Graphics) {
+        g.drawImage(ballImage, x, y, size, size, null)
+    }
 }
