@@ -1,7 +1,5 @@
 import java.awt.Color
 import java.awt.Graphics
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class FlappyNix(var x: Int, var y: Int, var width: Int, var color: Color, var panel: GameScreen) : Thread() {
     fun draw(g: Graphics) {
@@ -10,13 +8,13 @@ class FlappyNix(var x: Int, var y: Int, var width: Int, var color: Color, var pa
     }
 
     override fun run() {
-        var dirx = 6
+        var dirx = 2
         while (true) {
                 x += dirx
 
 
                 try {
-                    sleep(7)
+                    sleep(20)
                 } catch (e: InterruptedException) {
                 }
 

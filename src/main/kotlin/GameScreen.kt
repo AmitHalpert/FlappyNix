@@ -11,12 +11,11 @@ class GameScreen : JPanel() {
 
     var player: Player
     var vec: Array<FlappyNix?>
-    var img: Image? = null
+    var background: Image? = null
     var moveFlag = false
 
-
     init {
-        img = ImageIcon("src/main/resources/background.png").image
+        background = ImageIcon("src/main/resources/background.png").image
         player = Player(this)
         vec = arrayOfNulls<FlappyNix>(10)
         for (i in vec.indices) {
@@ -34,36 +33,17 @@ class GameScreen : JPanel() {
             Thread.sleep(200)
         } catch (e: InterruptedException) {
         }
-        addMouseMotionListener(MML())
         isFocusable = true
     }
 
     public override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
-        g.drawImage(img, 0, 0, 900, 504, null)
+        g.drawImage(background, 0, 0, width, height, null)
+
         for (i in vec.indices) if (vec[i]?.isAlive() == true) vec[i]?.draw(g)
         player.draw(g)
     }
 
-    internal inner class MML : MouseMotionAdapter() {
-        override fun mouseMoved(e: MouseEvent) {
-            player.x = e.x
-            player.y = e.y
-        }
-    }
-
-    fun hideMouseCursor() {
-        //Transparent 16 x 16 pixel cursor image.
-        val cursorImg = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
-
-        // Create a new blank cursor.
-        val blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-            cursorImg, Point(0, 0), "blank cursor"
-        )
-
-        // Set the blank cursor to the JPanel.
-        cursor = blankCursor
-    }
 
 
     companion object {
@@ -74,6 +54,7 @@ class GameScreen : JPanel() {
             val ScreenWidth = screenSize.getWidth()
             val ScreenHeight = screenSize.getHeight()
 
+            // setup Jframe
             val frame = JFrame("FlappyNix")
             val bp = GameScreen()
             frame.add(bp)
@@ -85,7 +66,6 @@ class GameScreen : JPanel() {
             frame.isFocusable = false
 
 
-            bp.hideMouseCursor()
             for (i in bp.vec.indices) {
                 bp.vec[i]?.start()
             }
