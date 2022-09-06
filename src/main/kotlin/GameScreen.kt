@@ -1,7 +1,6 @@
 import java.awt.*
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
-import java.awt.image.BufferedImage
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -17,6 +16,9 @@ class GameScreen : JPanel() {
     init {
         background = ImageIcon("src/main/resources/background.png").image
         player = Player(this)
+
+
+
         vec = arrayOfNulls<FlappyNix>(10)
         for (i in vec.indices) {
             val c = Color((Math.random() * 256).toInt(), (Math.random() * 256).toInt(), (Math.random() * 256).toInt())
@@ -33,8 +35,12 @@ class GameScreen : JPanel() {
             Thread.sleep(200)
         } catch (e: InterruptedException) {
         }
+
+        addKeyListener(player)
         isFocusable = true
     }
+
+
 
     public override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
@@ -43,6 +49,7 @@ class GameScreen : JPanel() {
         for (i in vec.indices) if (vec[i]?.isAlive() == true) vec[i]?.draw(g)
         player.draw(g)
     }
+
 
 
 
@@ -57,10 +64,11 @@ class GameScreen : JPanel() {
             // setup Jframe
             val frame = JFrame("FlappyNix")
             val bp = GameScreen()
+
             frame.add(bp)
+
             frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             frame.setSize(ScreenWidth.toInt(), ScreenHeight.toInt())
-
             frame.isResizable = false
             frame.isVisible = true
             frame.isFocusable = false
@@ -76,4 +84,10 @@ class GameScreen : JPanel() {
             bp.moveFlag = true
         }
     }
+
+
+
+
+
+
 }
