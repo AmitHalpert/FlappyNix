@@ -4,13 +4,16 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.geom.Rectangle2D
 import javax.swing.ImageIcon
+import kotlin.concurrent.thread
 
 class Player(var panel: GameScreen) : Thread(), KeyListener{
+
+    private var last_time = System.nanoTime()
 
     // constants
     private val playerWidth = 130
     private val playerHeight = 115
-    private val gravityAmount = 300
+    private val gravityAmount = 1
     // player characteristics
     private var playerX : Double = 800.0
     private var playerY : Double = 0.0
@@ -25,7 +28,7 @@ class Player(var panel: GameScreen) : Thread(), KeyListener{
     init {
         val img = ImageIcon("src/main/resources/nix.png")
         ballImage = img.image
-        playerHitBox?.setRect(32.0,34.0,54.0,54.0)
+
 
 
         start()
@@ -35,20 +38,28 @@ class Player(var panel: GameScreen) : Thread(), KeyListener{
 
     override fun run() {
         while (true) {
-
+            val time = System.nanoTime()
+            val delta_time = ((time - last_time) / 1000000)
+            last_time = time
 
             updatePlayer()
 
 
+
+            velY  += 1.0
+
+
             try {
-                sleep(10)
+                sleep(20)
             } catch (e: InterruptedException) {
             }
+
             panel.repaint()
+
         }
     }
 
-    fun updatePlayer() {
+    private fun updatePlayer() {
 
         //Updates X AND Y Position of the player
         playerX += velX
@@ -60,15 +71,19 @@ class Player(var panel: GameScreen) : Thread(), KeyListener{
         g.drawImage(ballImage, playerX.toInt(), playerY.toInt(), playerWidth, playerHeight, null)
     }
 
-    override fun keyTyped(p0: KeyEvent?) {
+    override fun keyTyped(key: KeyEvent?) {
 
     }
 
-    override fun keyPressed(p0: KeyEvent?) {
-        println("deezsssssssssssssssssss")
+    override fun keyPressed(key: KeyEvent?) {
+        if (key != null) {
+            when(key.keyCode){
+                KeyEvent.VK_SPACE -> velY -= 35.0
+            }
+        }
     }
 
-    override fun keyReleased(p0: KeyEvent?) {
+    override fun keyReleased(key: KeyEvent?) {
 
     }
 }
