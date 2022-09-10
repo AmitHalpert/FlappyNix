@@ -11,7 +11,7 @@ public class Player extends Thread implements KeyListener {
 	private int playerWidth = 130, playerHeight = 115;
 	private int playerX = 800, playerY = 0;
 	public int velX = 0, velY = 0;
-	Rectangle groundCollider = new Rectangle(700, 900, 1200, 1000);
+	Rectangle groundCollider = new Rectangle(0, 900, 1950, 1000);
 	Rectangle hitBox = new Rectangle(playerX, playerY, playerWidth, playerHeight);
 	Image Texture;
 
@@ -33,17 +33,19 @@ public class Player extends Thread implements KeyListener {
 
 
 			if(groundCollider.intersects(hitBox)){
+				playerY = playerY - 5;
 				velY = -1;
 			}
 
-
 			velY  += 1.0;
+
 
 
 		   try {
 			   	Thread.sleep(10);
 		   	   }catch (InterruptedException e) {}
-				
+
+
 			panel.repaint();
 		}
 	}

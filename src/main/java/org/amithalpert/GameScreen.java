@@ -27,7 +27,7 @@ public class GameScreen extends JPanel
 		g.drawImage(worldTexture,0,0,getWidth(),getHeight(),null);
 
 		g.setColor(Color.red);
-		g.drawRect(nix.groundCollider.x , nix.groundCollider.y , nix.groundCollider.width, nix.groundCollider.height);
+		g.drawRect(player.groundCollider.x , player.groundCollider.y , player.groundCollider.width, player.groundCollider.height);
 		g.drawRect(player.hitBox.x, player.hitBox.y , player.hitBox.width, player.hitBox.height);
 		
 
