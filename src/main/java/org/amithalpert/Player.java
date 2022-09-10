@@ -2,6 +2,7 @@ package org.amithalpert;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import javax.swing.*;
 
 public class Player extends Thread implements KeyListener {
@@ -9,19 +10,21 @@ public class Player extends Thread implements KeyListener {
 
 	private int playerWidth = 130, playerHeight = 115;
 	private int playerX = 800, playerY;
-	private int velX = 0, velY = 0;
-	Rectangle hitBox = new Rectangle(0, 0, playerWidth, playerHeight);
+	public int velX = 0, velY = 0;
+	Rectangle hitBox = new Rectangle();
 	Image Texture;
 
 
 	public Player(GameScreen panel)
 	{
-		this.panel=panel;
+		this.panel = panel;
+		hitBox.setBounds(playerX,playerY,playerWidth,playerHeight);
 		Texture = new ImageIcon("src/main/resources/nix.png").getImage();
 
 		start();
 	}
-	
+
+
 	public void run()
 	{
 		while(true)
@@ -29,6 +32,9 @@ public class Player extends Thread implements KeyListener {
 
 
 			updatePlayer();
+
+
+
 			velY  += 1.0;
 
 

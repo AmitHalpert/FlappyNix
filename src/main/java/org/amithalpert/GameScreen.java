@@ -1,22 +1,22 @@
 package org.amithalpert;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import javax.swing.*;
 
 public class GameScreen extends JPanel
 {
-	Player player ;
+	Player player;
+	FlappyNix nix;
 	Image worldTexture;
 
 	
 	public GameScreen()
 	{
 		worldTexture = (new ImageIcon("src/main/resources/background.png")).getImage();
-		
 		player = new Player(this);
-		
-		try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {}	
+		nix = new FlappyNix(player, this);
+
+
 		
 
 		addKeyListener(player);
@@ -28,14 +28,17 @@ public class GameScreen extends JPanel
 		super.paintComponent(g);
 		
 		g.drawImage(worldTexture,0,0,getWidth(),getHeight(),null);
+
+		g.setColor(Color.red);
+		g.drawRect(nix.groundCollider.x , nix.groundCollider.y , nix.groundCollider.width, nix.groundCollider.height);
+		g.drawRect(player.hitBox.y, player.hitBox.x, player.hitBox.width, player.hitBox.height);
 		
 
-		
 		player.draw(g);
 	}
 
 
-	
+
 	public static void main(String[] args) 
 	{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -48,13 +51,7 @@ public class GameScreen extends JPanel
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setFocusable(false);
-		
 
-
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {}
 		
 
 	}
