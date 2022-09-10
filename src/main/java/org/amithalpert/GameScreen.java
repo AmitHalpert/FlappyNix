@@ -1,6 +1,5 @@
 package org.amithalpert;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import javax.swing.*;
 
 public class GameScreen extends JPanel
@@ -17,8 +16,6 @@ public class GameScreen extends JPanel
 		nix = new FlappyNix(player, this);
 
 
-		
-
 		addKeyListener(player);
 		setFocusable(true);
 	}
@@ -31,7 +28,7 @@ public class GameScreen extends JPanel
 
 		g.setColor(Color.red);
 		g.drawRect(nix.groundCollider.x , nix.groundCollider.y , nix.groundCollider.width, nix.groundCollider.height);
-		g.drawRect(player.hitBox.y, player.hitBox.x, player.hitBox.width, player.hitBox.height);
+		g.drawRect(player.hitBox.x, player.hitBox.y , player.hitBox.width, player.hitBox.height);
 		
 
 		player.draw(g);
@@ -51,8 +48,6 @@ public class GameScreen extends JPanel
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setFocusable(false);
-
-		
 
 	}
 }

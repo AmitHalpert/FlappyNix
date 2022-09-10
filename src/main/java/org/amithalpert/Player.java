@@ -9,16 +9,16 @@ public class Player extends Thread implements KeyListener {
 	GameScreen panel;
 
 	private int playerWidth = 130, playerHeight = 115;
-	private int playerX = 800, playerY;
+	private int playerX = 800, playerY = 0;
 	public int velX = 0, velY = 0;
-	Rectangle hitBox = new Rectangle();
+	Rectangle groundCollider = new Rectangle(700, 900, 1200, 1000);
+	Rectangle hitBox = new Rectangle(playerX, playerY, playerWidth, playerHeight);
 	Image Texture;
 
 
 	public Player(GameScreen panel)
 	{
 		this.panel = panel;
-		hitBox.setBounds(playerX,playerY,playerWidth,playerHeight);
 		Texture = new ImageIcon("src/main/resources/nix.png").getImage();
 
 		start();
@@ -29,17 +29,19 @@ public class Player extends Thread implements KeyListener {
 	{
 		while(true)
 		{
-
-
 			updatePlayer();
 
+
+			if(groundCollider.intersects(hitBox)){
+				velY = -1;
+			}
 
 
 			velY  += 1.0;
 
 
 		   try {
-			   	Thread.sleep(20);
+			   	Thread.sleep(10);
 		   	   }catch (InterruptedException e) {}
 				
 			panel.repaint();
@@ -52,15 +54,15 @@ public class Player extends Thread implements KeyListener {
 		playerX += velX;
 		playerY += velY;
 
-
-		hitBox.setLocation(playerY, playerX);
+		hitBox.x = playerX;
+		hitBox.y = playerY;
 	}
 	
 	
 	
 	public void draw(Graphics g)
 	{
-		g.drawImage(Texture, playerX,  playerY, playerWidth, playerHeight,null);
+		g.drawImage(Texture,playerX ,  playerY, playerWidth, playerHeight,null);
 	}
 
 	@Override
