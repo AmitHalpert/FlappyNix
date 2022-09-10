@@ -1,3 +1,2 @@
-
-rootProject.name = "FlappyNix"
+rootProject.name = "FlappyNixJava"
 
