@@ -1,14 +1,11 @@
-package org.amithalpert.entity;
+package org.amithalpert.entities;
 
 import org.amithalpert.Screens.GamePanel;
 import org.amithalpert.Tools.GameObject;
 import org.amithalpert.Tools.KeyboardHandling;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Player extends GameObject {
 
@@ -16,14 +13,37 @@ public class Player extends GameObject {
     private KeyboardHandling keyH;
     private Image Idle;
 
+
     public Player(GamePanel gp, KeyboardHandling keyH, int width, int height, int x, int y) {
         super(width, height, x, y);
         this.gp = gp;
         this.keyH = keyH;
+        body = new Rectangle(8, 16, 32, 32);
 
         setDefaultValues();
-        getPlayerTextures();
+        setPlayerTextures();
     }
+
+
+    public void update(){
+
+        userInput();
+
+
+        velY += 3;
+
+
+        x += velX;
+        y += velY;
+        body.x = x;
+        body.y = y;
+
+
+
+        velX = 0;
+        velY = 0;
+    }
+
 
     private void setDefaultValues(){
 
@@ -31,8 +51,7 @@ public class Player extends GameObject {
 
     }
 
-    private void getPlayerTextures(){
-
+    private void setPlayerTextures(){
 
         Idle = new ImageIcon("src/main/resources/nix.png").getImage();
 
@@ -41,30 +60,28 @@ public class Player extends GameObject {
 
 
 
-    public void update(){
-
+    private void userInput(){
         if(keyH.upPressed){
-            y -= speed;
+            velY = -speed;
         }
-        else if (keyH.downPressed){
-            y += speed;
+        if (keyH.downPressed){
+            velY = speed;
         }
-        else if(keyH.rightPressed){
-            x += speed;
+        if(keyH.rightPressed){
+            velX = speed;
         }
-        else if(keyH.leftPressed){
-            x -= speed;
+        if(keyH.leftPressed){
+            velX = -speed;
         }
-
     }
 
     public void draw(Graphics2D g2){
 
         g2.setColor(Color.red);
 
-        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+        g2.fillRect(body.x, body.y, width, height);
 
-        g2.drawImage(Idle ,x, y, width, height, null);
+        g2.drawImage(Idle ,x, y, gp.tileSize, gp.tileSize, null);
 
     }
 

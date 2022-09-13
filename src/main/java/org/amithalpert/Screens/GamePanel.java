@@ -1,7 +1,7 @@
 package org.amithalpert.Screens;
 
 import org.amithalpert.Tools.KeyboardHandling;
-import org.amithalpert.entity.Player;
+import org.amithalpert.entities.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,12 +21,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyboardHandling key = new KeyboardHandling();
     Thread gameThread;
-    Player player = new Player(this, key, 100, 100, 0, 0);
+    Player player = new Player(this, key, tileSize, tileSize, 0, 0);
 
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.blue);
+        this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(key);
         this.setFocusable(true);
@@ -46,8 +46,6 @@ public class GamePanel extends JPanel implements Runnable {
         double deltaTime = 0;
         long lastTime = System.nanoTime();
         long currentTime;
-
-
 
         while (gameThread != null){
 
