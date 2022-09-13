@@ -13,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16;
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale;
+    public final int tileSize = originalTileSize * scale;
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
     final int screenWidth = tileSize * maxScreenCol;
@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(key);
         this.setFocusable(true);
     }
+
 
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -70,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public void update(){
-
+        player.update();
 
     }
 
@@ -79,8 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics g2 = (Graphics2D) g;
 
-
-        g2.setColor(Color.white);
+        player.draw((Graphics2D) g2);
 
 
         g2.dispose();
