@@ -12,76 +12,97 @@ public class Player extends GameObject {
     private GamePanel gp;
     private KeyboardHandling keyH;
     private Image Idle;
+    private boolean once = false;
+    private boolean isJumping = false;
 
 
     public Player(GamePanel gp, KeyboardHandling keyH, int width, int height, int x, int y) {
         super(width, height, x, y);
         this.gp = gp;
         this.keyH = keyH;
-        body = new Rectangle(8, 16, 32, 32);
-
-        setDefaultValues();
-        setPlayerTextures();
-    }
+        boxCollider = new Rectangle(8, 16, width, height);
 
 
-    public void update(){
-
-        userInput();
-
-
-        velY += 3;
-
-
-        x += velX;
-        y += velY;
-        body.x = x;
-        body.y = y;
-
-
-
-        velX = 0;
-        velY = 0;
-    }
-
-
-    private void setDefaultValues(){
-
+        // set player parameters
         speed = 4;
 
-    }
 
-    private void setPlayerTextures(){
-
+        // set player textures and animations
         Idle = new ImageIcon("src/main/resources/nix.png").getImage();
 
     }
 
 
 
+    public void update(Rectangle ground, double deltaTime){
 
-    private void userInput(){
-        if(keyH.upPressed){
-            velY = -speed;
+
+        userInput(deltaTime);
+
+        // updates player position
+        x += velX;
+        y += velY;
+        boxCollider.x = (int) x;
+        boxCollider.y = (int) y;
+
+
+
+        // apply gravity
+        velY += 1 * deltaTime;
+
+
+        if(OnCollisionEnter(boxCollider, ground)) {
+            velY = 0;
         }
-        if (keyH.downPressed){
-            velY = speed;
-        }
-        if(keyH.rightPressed){
-            velX = speed;
-        }
-        if(keyH.leftPressed){
-            velX = -speed;
-        }
+
+
+
+        velX = 0;
     }
+
+
 
     public void draw(Graphics2D g2){
 
         g2.setColor(Color.red);
 
-        g2.fillRect(body.x, body.y, width, height);
+        g2.fillRect(boxCollider.x, boxCollider.y, boxCollider.width, boxCollider.height);
 
-        g2.drawImage(Idle ,x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(Idle , (int) x, (int) y, width, height, null);
+
+    }
+
+
+
+
+    private void userInput(double deltaTime){
+        if(keyH.upPressed){
+            if(!isJumping){
+                velY = -15 * deltaTime;
+                isJumping = true;
+            }
+        }
+        if(keyH.rightPressed){
+            velX = speed * deltaTime;
+        }
+        if(keyH.leftPressed){
+            velX = -speed * deltaTime;
+        }
+
+
+        if(!keyH.upPressed){
+            isJumping = false;
+        }
+    }
+
+
+
+    private boolean OnCollisionEnter(Rectangle rect1, Rectangle rect2){
+
+        return rect1.x < rect2.x + rect2.width &&
+                rect1.x + rect1.width > rect2.x &&
+                rect1.y < rect2.y + (rect2.height + 3) &&
+                (rect1.height + 3) + rect1.y > rect2.y;
 
     }
 

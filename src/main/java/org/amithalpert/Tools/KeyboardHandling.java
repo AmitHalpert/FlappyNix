@@ -17,7 +17,6 @@ public class KeyboardHandling implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
 
-
         switch (e.getKeyCode()){
 
             case KeyEvent.VK_W:
