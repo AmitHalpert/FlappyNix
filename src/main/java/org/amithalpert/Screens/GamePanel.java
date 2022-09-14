@@ -8,20 +8,22 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    int FPS = 60;
+    final int FPS = 60;
 
-    final int originalTileSize = 16;
-    final int scale = 3;
+    public final int originalTileSize = 16;
+    public final int scale = 3;
 
     public final int tileSize = originalTileSize * scale;
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 12;
+    public final int screenWidth = tileSize * maxScreenCol;
+    public final int screenHeight = tileSize * maxScreenRow;
 
+    Rectangle ground = new Rectangle(0, 300, screenWidth, screenHeight);
     KeyboardHandling key = new KeyboardHandling();
     Thread gameThread;
     Player player = new Player(this, key, tileSize, tileSize, 0, 0);
+
 
 
     public GamePanel(){
@@ -57,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
             if(deltaTime >= 1){
-                update();
+                update(deltaTime);
                 repaint();
 
                 deltaTime--;
@@ -68,8 +70,8 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
 
-    public void update(){
-        player.update();
+    public void update(double deltaTime){
+        player.update(ground, deltaTime);
 
     }
 
@@ -78,8 +80,10 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics g2 = (Graphics2D) g;
 
-        player.draw((Graphics2D) g2);
+        g2.setColor(Color.BLUE);
+        g2.fillRect(ground.x, ground.y, ground.width, ground.height);
 
+        player.draw((Graphics2D) g2);
 
         g2.dispose();
     }

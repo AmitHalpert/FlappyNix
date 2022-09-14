@@ -4,10 +4,9 @@ import java.awt.*;
 
 public abstract class GameObject{
 
-    protected int x, y, velX, velY, speed;
+    protected double x, y, velX, velY, speed;
     protected int width, height;
-    protected Rectangle body;
-
+    protected Rectangle boxCollider;
 
     public GameObject(int width, int height, int x, int y) {
         this.x = x;
@@ -20,7 +19,6 @@ public abstract class GameObject{
     }
 
 
-    public abstract void update();
 
 
 
