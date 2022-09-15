@@ -1,5 +1,6 @@
 package org.amithalpert.Screens;
 
+import org.amithalpert.Tools.BoxCollider;
 import org.amithalpert.Tools.KeyboardHandling;
 import org.amithalpert.entities.Player;
 
@@ -19,7 +20,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenWidth = tileSize * maxScreenCol;
     public final int screenHeight = tileSize * maxScreenRow;
 
-    Rectangle ground = new Rectangle(0, 300, screenWidth, screenHeight);
+    BoxCollider ground = new BoxCollider(0, 300, screenWidth, screenHeight);
     KeyboardHandling key = new KeyboardHandling();
     Thread gameThread;
     Player player = new Player(this, key, tileSize, tileSize, 0, 0);
@@ -81,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics g2 = (Graphics2D) g;
 
         g2.setColor(Color.BLUE);
-        g2.fillRect(ground.x, ground.y, ground.width, ground.height);
+        g2.fillRect((int) ground.x, (int) ground.y, (int) ground.width, (int) ground.height);
 
         player.draw((Graphics2D) g2);
 
