@@ -1,14 +1,12 @@
 package org.amithalpert.Tools;
 
-import java.awt.*;
-
 public abstract class GameObject{
 
     protected double x, y, velX, velY, speed;
-    protected int width, height;
-    protected Rectangle boxCollider;
+    protected float width, height;
+    protected BoxCollider boxCollider;
 
-    public GameObject(int width, int height, int x, int y) {
+    public GameObject(int width, int height, double x, double y) {
         this.x = x;
         this.y = y;
         this.width = width;

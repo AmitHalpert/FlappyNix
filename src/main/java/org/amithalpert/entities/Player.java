@@ -1,6 +1,7 @@
 package org.amithalpert.entities;
 
 import org.amithalpert.Screens.GamePanel;
+import org.amithalpert.Tools.BoxCollider;
 import org.amithalpert.Tools.GameObject;
 import org.amithalpert.Tools.KeyboardHandling;
 
@@ -16,11 +17,11 @@ public class Player extends GameObject {
     private boolean isJumping = false;
 
 
-    public Player(GamePanel gp, KeyboardHandling keyH, int width, int height, int x, int y) {
+    public Player(GamePanel gp, KeyboardHandling keyH, int width, int height, double x, double y) {
         super(width, height, x, y);
         this.gp = gp;
         this.keyH = keyH;
-        boxCollider = new Rectangle(8, 16, width, height);
+        boxCollider = new BoxCollider(8, 16, width, height);
 
 
         // set player parameters
@@ -34,7 +35,7 @@ public class Player extends GameObject {
 
 
 
-    public void update(Rectangle ground, double deltaTime){
+    public void update(BoxCollider ground, double deltaTime){
 
 
         userInput(deltaTime);
@@ -42,8 +43,8 @@ public class Player extends GameObject {
         // updates player position
         x += velX;
         y += velY;
-        boxCollider.x = (int) x;
-        boxCollider.y = (int) y;
+        boxCollider.x =  x;
+        boxCollider.y =  y;
 
 
 
@@ -51,11 +52,9 @@ public class Player extends GameObject {
         velY += 1 * deltaTime;
 
 
-        if(OnCollisionEnter(boxCollider, ground)) {
+        if(boxCollider.overlaps(ground)) {
             velY = 0;
         }
-
-
 
         velX = 0;
     }
@@ -66,9 +65,9 @@ public class Player extends GameObject {
 
         g2.setColor(Color.red);
 
-        g2.fillRect(boxCollider.x, boxCollider.y, boxCollider.width, boxCollider.height);
+        g2.fillRect((int) boxCollider.x, (int) boxCollider.y, (int) boxCollider.width, (int) boxCollider.height);
 
-        g2.drawImage(Idle , (int) x, (int) y, width, height, null);
+        g2.drawImage(Idle , (int) x, (int) y, (int) width, (int) height, null);
 
     }
 
@@ -94,18 +93,6 @@ public class Player extends GameObject {
             isJumping = false;
         }
     }
-
-
-
-    private boolean OnCollisionEnter(Rectangle rect1, Rectangle rect2){
-
-        return rect1.x < rect2.x + rect2.width &&
-                rect1.x + rect1.width > rect2.x &&
-                rect1.y < rect2.y + (rect2.height + 3) &&
-                (rect1.height + 3) + rect1.y > rect2.y;
-
-    }
-
 
 
 }
