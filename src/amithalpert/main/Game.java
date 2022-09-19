@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import entities.Player;
 import levels.LevelManager;
 
+
 public class Game implements Runnable {
 
 	private Desktop desktop;
@@ -15,6 +16,7 @@ public class Game implements Runnable {
 	private Player player;
 	private LevelManager levelManager;
 
+	// global constants
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
 	public final static int TILES_IN_WIDTH = 26;
@@ -24,37 +26,39 @@ public class Game implements Runnable {
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
 	public Game() {
-		initClasses();
+		// initializing classes
+		levelManager = new LevelManager(this);
+		player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
+		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
 
 		gamePanel = new GamePanel(this);
 		desktop = new Desktop(gamePanel);
 		gamePanel.requestFocus();
 
+		// starting gameThread
 		startGameLoop();
 	}
 
-	private void initClasses() {
-		levelManager = new LevelManager(this);
-		player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
-		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
-
-	}
 
 	private void startGameLoop() {
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
+	// updates positions & logic
 	public void update() {
 		levelManager.update();
 		player.update();
 	}
 
+	// paint objects (called by paintComponent in gamePanel)
 	public void render(Graphics g) {
 		levelManager.draw(g);
 		player.render(g);
 	}
 
+
+	// main game loop
 	@Override
 	public void run() {
 

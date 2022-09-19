@@ -11,8 +11,24 @@ import utilz.LoadSave;
 public class Player extends Entity {
 	private BufferedImage[][] animations;
 	private int aniTick, aniIndex, aniSpeed = 25;
-	private int playerAction = IDLE;
+	private int AnimationToPlay = IDLE;
+
+	private enum PlayerState{
+		idle,
+		moving,
+		inAir,
+		attack
+
+	}
+	PlayerState State;
+
+	private boolean inAir = true;
+
+	private float xSpeed = 0;
+	private float ySpeed = 0f;
+
 	private boolean moving = false, attacking = false;
+	// controller booleans are modified in KeyboardInputs class
 	private boolean left, up, right, down, jump;
 	private float playerSpeed = 2.0f;
 	private int[][] lvlData;
@@ -20,14 +36,13 @@ public class Player extends Entity {
 	private float yDrawOffset = 4 * Game.SCALE;
 
 	// Jumping / Gravity
-	private float airSpeed = 0f;
 	private float gravity = 0.04f * Game.SCALE;
 	private float jumpSpeed = -2.25f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-	private boolean inAir = false;
 
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
+
 		loadAnimations();
 		initHitbox(x, y, 20 * Game.SCALE, 27 * Game.SCALE);
 	}
@@ -39,7 +54,7 @@ public class Player extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
+		g.drawImage(animations[AnimationToPlay][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
 		drawHitbox(g);
 	}
 
@@ -48,9 +63,10 @@ public class Player extends Entity {
 		if (aniTick >= aniSpeed) {
 			aniTick = 0;
 			aniIndex++;
-			if (aniIndex >= GetSpriteAmount(playerAction)) {
+			if (aniIndex >= GetSpriteAmount(AnimationToPlay)) {
 				aniIndex = 0;
 				attacking = false;
+				State = PlayerState.idle;
 			}
 
 		}
@@ -58,26 +74,32 @@ public class Player extends Entity {
 	}
 
 	private void setAnimation() {
-		int startAni = playerAction;
+		int startAni = AnimationToPlay;
 
-		if (moving)
-			playerAction = RUNNING;
-		else
-			playerAction = IDLE;
-
-		if (inAir) {
-			if (airSpeed < 0)
-				playerAction = JUMP;
-			else
-				playerAction = FALLING;
+		
+		switch (State){
+			case attack:
+				AnimationToPlay = ATTACK_1;
+				break;
+			case moving:
+				AnimationToPlay = RUNNING;
+				break;
+			case inAir:
+				if (ySpeed < 0)
+					AnimationToPlay = JUMP;
+				else
+					AnimationToPlay = FALLING;
+				break;
+			default:
+				AnimationToPlay = IDLE;
 		}
 
-		if (attacking)
-			playerAction = ATTACK_1;
 
-		if (startAni != playerAction)
+
+		if (startAni != AnimationToPlay)
 			resetAniTick();
 	}
+
 
 	private void resetAniTick() {
 		aniTick = 0;
@@ -85,55 +107,64 @@ public class Player extends Entity {
 	}
 
 	private void updatePos() {
-		moving = false;
+		State = PlayerState.idle;
 
-		if (jump)
+		// Controls
+
+		if (jump) {
+			State = PlayerState.inAir;
 			jump();
-		if (!left && !right && !inAir)
+		}
+		if (!left && !right && !inAir) {
 			return;
+		}
 
-		float xSpeed = 0;
+		xSpeed = 0;
 
 		if (left)
 			xSpeed -= playerSpeed;
 		if (right)
 			xSpeed += playerSpeed;
 
-		if (!inAir)
-			if (!IsEntityOnFloor(hitbox, lvlData))
+
+
+		if (!inAir){
+			if (!IsEntityOnFloor(hitbox, lvlData)){
 				inAir = true;
+				State = PlayerState.inAir;
+			}
+		}
+
 
 		if (inAir) {
-			if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
-				hitbox.y += airSpeed;
-				airSpeed += gravity;
+			if (CanMoveHere(hitbox.x, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)) {
+				hitbox.y += ySpeed;
+				ySpeed += gravity;
 				updateXPos(xSpeed);
 			} else {
-				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-				if (airSpeed > 0)
+				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, ySpeed);
+				if (ySpeed > 0)
 					resetInAir();
 				else
-					airSpeed = fallSpeedAfterCollision;
+					ySpeed = fallSpeedAfterCollision;
 				updateXPos(xSpeed);
 			}
 
 		} else
 			updateXPos(xSpeed);
-		moving = true;
+		State = PlayerState.moving;
 	}
 
 	private void jump() {
 		if (inAir)
 			return;
 		inAir = true;
-		airSpeed = jumpSpeed;
-
+		ySpeed = jumpSpeed;
 	}
 
 	private void resetInAir() {
 		inAir = false;
-		airSpeed = 0;
-
+		ySpeed = 0;
 	}
 
 	private void updateXPos(float xSpeed) {
