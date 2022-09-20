@@ -1,4 +1,4 @@
-package utilz;
+package tools;
 
 import java.awt.geom.Rectangle2D;
 
@@ -6,11 +6,13 @@ import main.Game;
 
 public class HelpMethods {
 
+
+	// Checks 4 rect points for collision
 	public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
-		if (!IsSolid(x, y, lvlData)){
-			if (!IsSolid(x + width, y + height, lvlData)){
-				if (!IsSolid(x + width, y, lvlData)){
-					if (!IsSolid(x, y + height, lvlData)){
+		if (!IsTile(x, y, lvlData)){
+			if (!IsTile(x + width, y + height, lvlData)){
+				if (!IsTile(x + width, y, lvlData)){
+					if (!IsTile(x, y + height, lvlData)){
 						return true;
 					}
 				}
@@ -19,7 +21,8 @@ public class HelpMethods {
 		return false;
 	}
 
-	private static boolean IsSolid(float x, float y, int[][] lvlData) {
+	// Checks if colliding with map tile and screen size
+	private static boolean IsTile(float x, float y, int[][] lvlData) {
 		if (x < 0 || x >= Game.GAME_WIDTH)
 			return true;
 		if (y < 0 || y >= Game.GAME_HEIGHT)
@@ -62,8 +65,8 @@ public class HelpMethods {
 
 	public static boolean IsEntityOnFloor(Rectangle2D.Float hitbox, int[][] lvlData) {
 		// Check the pixel below bottomleft and bottomright
-		if (!IsSolid(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
-			if (!IsSolid(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
+		if (!IsTile(hitbox.x, hitbox.y + hitbox.height + 1, lvlData))
+			if (!IsTile(hitbox.x + hitbox.width, hitbox.y + hitbox.height + 1, lvlData))
 				return false;
 		return true;
 
