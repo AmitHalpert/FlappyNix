@@ -1,50 +1,41 @@
 package entities;
 
-import static utilz.Constants.PlayerConstants.*;
-import static utilz.HelpMethods.*;
-import java.awt.Graphics;
+import static tools.Constants.PlayerConstants.*;
+import static tools.HelpMethods.*;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import main.Game;
-import utilz.LoadSave;
+import tools.LoadSave;
 
 public class Player extends Entity {
+
+	private float velX = 0;
+	private float velY = 0f;
 	private BufferedImage[][] animations;
 	private int aniTick, aniIndex, aniSpeed = 25;
-	private int AnimationToPlay = IDLE;
-
-	private enum PlayerState{
-		idle,
-		moving,
-		inAir,
-		attack
-
-	}
-	PlayerState State;
-
-	private boolean inAir = true;
-
-	private float xSpeed = 0;
-	private float ySpeed = 0f;
-
+	private int playerAction = IDLE;
 	private boolean moving = false, attacking = false;
-	// controller booleans are modified in KeyboardInputs class
 	private boolean left, up, right, down, jump;
-	private float playerSpeed = 2.0f;
+	private float playerSpeed = 1.0f * Game.SCALE;
 	private int[][] lvlData;
 	private float xDrawOffset = 21 * Game.SCALE;
 	private float yDrawOffset = 4 * Game.SCALE;
+	private int flipX = 0;
+	private int flipW = 1;
 
 	// Jumping / Gravity
 	private float gravity = 0.04f * Game.SCALE;
 	private float jumpSpeed = -2.25f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+	private boolean inAir = false;
 
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
-
 		loadAnimations();
-		initHitbox(x, y, 20 * Game.SCALE, 27 * Game.SCALE);
+		initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
+
 	}
 
 	public void update() {
@@ -54,7 +45,7 @@ public class Player extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(animations[AnimationToPlay][aniIndex], (int) (hitbox.x - xDrawOffset), (int) (hitbox.y - yDrawOffset), width, height, null);
+		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset), width * flipW, height, null);
 		drawHitbox(g);
 	}
 
@@ -63,10 +54,9 @@ public class Player extends Entity {
 		if (aniTick >= aniSpeed) {
 			aniTick = 0;
 			aniIndex++;
-			if (aniIndex >= GetSpriteAmount(AnimationToPlay)) {
+			if (aniIndex >= GetSpriteAmount(playerAction)) {
 				aniIndex = 0;
 				attacking = false;
-				State = PlayerState.idle;
 			}
 
 		}
@@ -74,32 +64,26 @@ public class Player extends Entity {
 	}
 
 	private void setAnimation() {
-		int startAni = AnimationToPlay;
+		int startAni = playerAction;
 
-		
-		switch (State){
-			case attack:
-				AnimationToPlay = ATTACK_1;
-				break;
-			case moving:
-				AnimationToPlay = RUNNING;
-				break;
-			case inAir:
-				if (ySpeed < 0)
-					AnimationToPlay = JUMP;
-				else
-					AnimationToPlay = FALLING;
-				break;
-			default:
-				AnimationToPlay = IDLE;
+		if (moving)
+			playerAction = RUNNING;
+		else
+			playerAction = IDLE;
+
+		if (inAir) {
+			if (velY < 0)
+				playerAction = JUMP;
+			else
+				playerAction = FALLING;
 		}
 
+		if (attacking)
+			playerAction = ATTACK_1;
 
-
-		if (startAni != AnimationToPlay)
+		if (startAni != playerAction)
 			resetAniTick();
 	}
-
 
 	private void resetAniTick() {
 		aniTick = 0;
@@ -107,64 +91,63 @@ public class Player extends Entity {
 	}
 
 	private void updatePos() {
-		State = PlayerState.idle;
+		moving = false;
 
-		// Controls
-
-		if (jump) {
-			State = PlayerState.inAir;
+		if (jump)
 			jump();
+
+		if (!inAir)
+			if ((!left && !right) || (right && left))
+				return;
+
+		velX = 0;
+
+		// moves player axis and flips them
+		if (left) {
+			velX -= playerSpeed;
+			flipX = width;
+			flipW = -1;
 		}
-		if (!left && !right && !inAir) {
-			return;
+		if (right) {
+			velX += playerSpeed;
+			flipX = 0;
+			flipW = 1;
 		}
 
-		xSpeed = 0;
-
-		if (left)
-			xSpeed -= playerSpeed;
-		if (right)
-			xSpeed += playerSpeed;
-
-
-
-		if (!inAir){
-			if (!IsEntityOnFloor(hitbox, lvlData)){
+		if (!inAir)
+			if (!IsEntityOnFloor(hitbox, lvlData))
 				inAir = true;
-				State = PlayerState.inAir;
-			}
-		}
-
 
 		if (inAir) {
-			if (CanMoveHere(hitbox.x, hitbox.y + ySpeed, hitbox.width, hitbox.height, lvlData)) {
-				hitbox.y += ySpeed;
-				ySpeed += gravity;
-				updateXPos(xSpeed);
+			if (CanMoveHere(hitbox.x, hitbox.y + velY, hitbox.width, hitbox.height, lvlData)) {
+				hitbox.y += velY;
+				velY += gravity;
+				updateXPos(velX);
 			} else {
-				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, ySpeed);
-				if (ySpeed > 0)
+				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, velY);
+				if (velY > 0)
 					resetInAir();
 				else
-					ySpeed = fallSpeedAfterCollision;
-				updateXPos(xSpeed);
+					velY = fallSpeedAfterCollision;
+				updateXPos(velX);
 			}
 
 		} else
-			updateXPos(xSpeed);
-		State = PlayerState.moving;
+			updateXPos(velX);
+		moving = true;
 	}
 
 	private void jump() {
 		if (inAir)
 			return;
 		inAir = true;
-		ySpeed = jumpSpeed;
+		velY = jumpSpeed;
+
 	}
 
 	private void resetInAir() {
 		inAir = false;
-		ySpeed = 0;
+		velY = 0;
 	}
 
 	private void updateXPos(float xSpeed) {
