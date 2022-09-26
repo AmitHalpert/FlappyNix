@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 
 
 // Setup and initializing the jframe window
-
 public class Desktop {
 	private JFrame jframe;
 

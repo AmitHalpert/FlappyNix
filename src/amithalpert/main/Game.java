@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import entities.Player;
 import levels.LevelManager;
@@ -8,15 +9,17 @@ import levels.LevelManager;
 
 public class Game implements Runnable {
 
+
 	private Desktop desktop;
 	private GamePanel gamePanel;
 	private Thread gameThread;
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
-	private Player player;
+	private ArrayList<Player> players;
 	private LevelManager levelManager;
 
 	// global constants
+	public final static int NUM_PLAYER = 2;
 	public final static int TILES_DEFAULT_SIZE = 32;
 	public final static float SCALE = 2f;
 	public final static int TILES_IN_WIDTH = 26;
@@ -28,8 +31,12 @@ public class Game implements Runnable {
 	public Game() {
 		// initializing classes
 		levelManager = new LevelManager(this);
-		player = new Player(200, 200, (int) (64 * SCALE), (int) (40 * SCALE));
-		player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
+
+		players = new ArrayList<>();
+		for(int i = 0; i < NUM_PLAYER; i++){
+			players.add(new Player(200 + i * 40, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
+			players.get(i).loadLvlData(levelManager.getCurrentLevel().getLevelData());
+		}
 
 		gamePanel = new GamePanel(this);
 		desktop = new Desktop(gamePanel);
@@ -47,13 +54,26 @@ public class Game implements Runnable {
 	// updates positions & logic
 	public void update() {
 		levelManager.update();
-		player.update();
+
+		for(Player player : players){
+			player.update();
+		}
+
+		if(players.get(0).getHitbox().intersects(players.get(1).getHitbox())){
+			System.out.println("Collision between two players");
+		}
+
+
 	}
 
 	// paint objects (called by paintComponent in gamePanel)
 	public void render(Graphics g) {
 		levelManager.draw(g);
-		player.render(g);
+
+		for(Player player : players){
+			player.render(g);
+		}
+
 	}
 
 
@@ -104,11 +124,14 @@ public class Game implements Runnable {
 	}
 
 	public void windowFocusLost() {
-		player.resetDirBooleans();
+		for(Player player : players){
+			player.resetDirBooleans();
+		}
 	}
 
-	public Player getPlayer() {
-		return player;
+
+	public ArrayList<Player> getPlayers() {
+		return players;
 	}
 
 }

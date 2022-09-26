@@ -2,6 +2,7 @@ package entities;
 
 import static tools.Constants.PlayerConstants.*;
 import static tools.HelpMethods.*;
+import static tools.HelpMethods.CanMoveHere;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,9 @@ import tools.LoadSave;
 
 public class Player extends Entity {
 
-	private float velX = 0;
+
+
+	private float velX = 0f;
 	private float velY = 0f;
 	private BufferedImage[][] animations;
 	private int aniTick, aniIndex, aniSpeed = 25;
@@ -35,7 +38,6 @@ public class Player extends Entity {
 		super(x, y, width, height);
 		loadAnimations();
 		initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
-
 	}
 
 	public void update() {
@@ -96,13 +98,16 @@ public class Player extends Entity {
 		if (jump)
 			jump();
 
-		if (!inAir)
-			if ((!left && !right) || (right && left))
+		if (!inAir){
+			if ((!left && !right) || (right && left)){
 				return;
+			}
+		}
 
+		// resets player X velocity
 		velX = 0;
 
-		// moves player axis and flips them
+		// moves player axis and flips according to which side is player facing?
 		if (left) {
 			velX -= playerSpeed;
 			flipX = width;
@@ -119,11 +124,13 @@ public class Player extends Entity {
 				inAir = true;
 
 		if (inAir) {
+			// horizontal collision detection
 			if (CanMoveHere(hitbox.x, hitbox.y + velY, hitbox.width, hitbox.height, lvlData)) {
 				hitbox.y += velY;
 				velY += gravity;
 				updateXPos(velX);
 			} else {
+				// vertical collision detection
 				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, velY);
 				if (velY > 0)
 					resetInAir();
@@ -142,7 +149,6 @@ public class Player extends Entity {
 			return;
 		inAir = true;
 		velY = jumpSpeed;
-
 	}
 
 	private void resetInAir() {
@@ -151,6 +157,7 @@ public class Player extends Entity {
 	}
 
 	private void updateXPos(float xSpeed) {
+
 		if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
 			hitbox.x += xSpeed;
 		} else {
@@ -174,7 +181,6 @@ public class Player extends Entity {
 		this.lvlData = lvlData;
 		if (!IsEntityOnFloor(hitbox, lvlData))
 			inAir = true;
-
 	}
 
 	public void resetDirBooleans() {
