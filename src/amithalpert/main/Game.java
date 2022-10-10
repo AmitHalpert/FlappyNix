@@ -10,6 +10,7 @@ import levels.LevelManager;
 public class Game implements Runnable {
 
 
+
 	private Desktop desktop;
 	private GamePanel gamePanel;
 	private Thread gameThread;
@@ -34,7 +35,7 @@ public class Game implements Runnable {
 
 		players = new ArrayList<>();
 		for(int i = 0; i < NUM_PLAYER; i++){
-			players.add(new Player(200 + i * 40, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
+			players.add(new Player(200 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
 			players.get(i).loadLvlData(levelManager.getCurrentLevel().getLevelData());
 		}
 
@@ -54,14 +55,29 @@ public class Game implements Runnable {
 	// updates positions & logic
 	public void update() {
 		levelManager.update();
-
 		for(Player player : players){
 			player.update();
 		}
 
-		if(players.get(0).getHitbox().intersects(players.get(1).getHitbox())){
-			System.out.println("Collision between two players");
+
+		for(Player player : players) {
+			// Collision between two players
+			if (players.get(0).getHitbox().intersects(players.get(1).getHitbox())) {
+
+
+				player.getHitbox().x -= player.getVelX();
+				player.setVelX(0);
+
+				player.getHitbox().y -= player.getVelY();
+				player.setVelY(0);
+				player.setInAir(false);
+
+
+				System.out.println("Collision between two players");
+			}
+
 		}
+
 
 
 	}
@@ -69,11 +85,9 @@ public class Game implements Runnable {
 	// paint objects (called by paintComponent in gamePanel)
 	public void render(Graphics g) {
 		levelManager.draw(g);
-
 		for(Player player : players){
 			player.render(g);
 		}
-
 	}
 
 

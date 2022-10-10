@@ -1,17 +1,17 @@
 package entities;
 
+
 import static tools.Constants.PlayerConstants.*;
 import static tools.HelpMethods.*;
-import static tools.HelpMethods.CanMoveHere;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import main.Game;
 import tools.LoadSave;
 
 public class Player extends Entity {
-
 
 
 	private float velX = 0f;
@@ -32,7 +32,9 @@ public class Player extends Entity {
 	private float gravity = 0.04f * Game.SCALE;
 	private float jumpSpeed = -2.25f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+
 	private boolean inAir = false;
+
 
 	public Player(float x, float y, int width, int height) {
 		super(x, y, width, height);
@@ -119,18 +121,21 @@ public class Player extends Entity {
 			flipW = 1;
 		}
 
+
+
 		if (!inAir)
 			if (!IsEntityOnFloor(hitbox, lvlData))
 				inAir = true;
 
+
 		if (inAir) {
-			// horizontal collision detection
+			// horizontal tile collision detection
 			if (CanMoveHere(hitbox.x, hitbox.y + velY, hitbox.width, hitbox.height, lvlData)) {
 				hitbox.y += velY;
 				velY += gravity;
 				updateXPos(velX);
 			} else {
-				// vertical collision detection
+				// vertical tile collision detection
 				hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, velY);
 				if (velY > 0)
 					resetInAir();
@@ -160,6 +165,7 @@ public class Player extends Entity {
 
 		if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
 			hitbox.x += xSpeed;
+
 		} else {
 			hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
 		}
@@ -189,6 +195,9 @@ public class Player extends Entity {
 		up = false;
 		down = false;
 	}
+
+
+
 
 	public void setAttacking(boolean attacking) {
 		this.attacking = attacking;
@@ -228,6 +237,31 @@ public class Player extends Entity {
 
 	public void setJump(boolean jump) {
 		this.jump = jump;
+	}
+
+
+	public float getVelX() {
+		return velX;
+	}
+
+	public void setVelX(float velX) {
+		this.velX = velX;
+	}
+
+	public float getVelY() {
+		return velY;
+	}
+
+	public void setVelY(float velY) {
+		this.velY = velY;
+	}
+
+	public boolean isInAir() {
+		return inAir;
+	}
+
+	public void setInAir(boolean inAir) {
+		this.inAir = inAir;
 	}
 
 }
