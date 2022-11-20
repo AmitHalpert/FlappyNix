@@ -14,8 +14,8 @@ public class Game implements Runnable {
 	private Desktop desktop;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-	private final int FPS_SET = 120;
-	private final int UPS_SET = 200;
+	public static final int FPS_SET = 120;
+	public static final int UPS_SET = 200;
 	private ArrayList<Player> players;
 	private LevelManager levelManager;
 
@@ -47,39 +47,31 @@ public class Game implements Runnable {
 		startGameLoop();
 	}
 
-	private void startGameLoop() {
+	private void startGameLoop(){
 		gameThread = new Thread(this);
 		gameThread.start();
+
+
+		// start player thread
+		for(Player player : players){
+			player.start();
+		}
+
+		for(Player player : players){
+			try {
+				player.join();
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+
 	}
 
 	// updates positions & logic
 	public void update() {
 		levelManager.update();
-		for(Player player : players){
-			player.update();
-		}
-
-
-		for(Player player : players) {
-			// Collision between two players
-			if (players.get(0).getHitbox().intersects(players.get(1).getHitbox())) {
-
-
-				player.getHitbox().x -= player.getVelX();
-				player.setVelX(0);
-
-				player.getHitbox().y -= player.getVelY();
-				player.setVelY(0);
-				player.setInAir(false);
-
-
-				System.out.println("Collision between two players");
-			}
-
-		}
-
-
-
 	}
 
 	// paint objects (called by paintComponent in gamePanel)

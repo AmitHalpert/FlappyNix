@@ -1,6 +1,8 @@
 package entities;
 
 
+import static main.Game.FPS_SET;
+import static main.Game.UPS_SET;
 import static tools.Constants.PlayerConstants.*;
 import static tools.HelpMethods.*;
 
@@ -11,7 +13,7 @@ import java.awt.image.BufferedImage;
 import main.Game;
 import tools.LoadSave;
 
-public class Player extends Entity {
+public class Player extends Entity{
 
 
 	private float velX = 0f;
@@ -92,6 +94,33 @@ public class Player extends Entity {
 	private void resetAniTick() {
 		aniTick = 0;
 		aniIndex = 0;
+	}
+
+	@Override
+	public void run() {
+
+
+		double timePerUpdate = 1000000000.0 / UPS_SET;
+
+		long previousTime = System.nanoTime();
+		double deltaU = 0;
+
+
+		while (true) {
+			long currentTime = System.nanoTime();
+
+			deltaU += (currentTime - previousTime) / timePerUpdate;
+
+			previousTime = currentTime;
+
+			if (deltaU >= 1) {
+				update();
+				deltaU--;
+			}
+
+
+		}
+
 	}
 
 	private void updatePos() {
