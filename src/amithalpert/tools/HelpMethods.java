@@ -7,8 +7,17 @@ import main.Game;
 public class HelpMethods {
 
 
-	public static boolean CollisionBetweenPlayers(){
+	public static boolean HorizontalCollisionBetweenPlayers(){
 		return Game.getPlayers().get(0).getHitbox().intersects(Game.getPlayers().get(1).getHitbox());
+	}
+	public static boolean VerticalCollisionBetweenPlayers(){
+
+		if(Game.getPlayers().get(0).getPlayerCollider().intersects(Game.getPlayers().get(1).getHitbox()) || Game.getPlayers().get(1).getPlayerCollider().intersects(Game.getPlayers().get(0).getHitbox())){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 
