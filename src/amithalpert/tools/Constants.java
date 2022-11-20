@@ -3,6 +3,12 @@ package tools;
 public class Constants {
 
 
+	public static class GameLoopConstants{
+		public static final int FPS_SET = 120;
+		public static final int UPS_SET = 200;
+	}
+
+
 	public static class PlayerConstants {
 		public static final int IDLE = 0;
 		public static final int RUNNING = 1;

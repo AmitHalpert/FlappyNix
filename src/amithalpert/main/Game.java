@@ -6,17 +6,15 @@ import java.util.ArrayList;
 import entities.Player;
 import levels.LevelManager;
 
+import static tools.Constants.GameLoopConstants.*;
+
 
 public class Game implements Runnable {
-
-
 
 	private Desktop desktop;
 	private GamePanel gamePanel;
 	private Thread gameThread;
-	public static final int FPS_SET = 120;
-	public static final int UPS_SET = 200;
-	private ArrayList<Player> players;
+	private static ArrayList<Player> players;
 	private LevelManager levelManager;
 
 	// global constants
@@ -60,7 +58,6 @@ public class Game implements Runnable {
 		for(Player player : players){
 			try {
 				player.join();
-
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -69,7 +66,7 @@ public class Game implements Runnable {
 
 	}
 
-	// updates positions & logic
+
 	public void update() {
 		levelManager.update();
 	}
@@ -136,7 +133,7 @@ public class Game implements Runnable {
 	}
 
 
-	public ArrayList<Player> getPlayers() {
+	public static ArrayList<Player> getPlayers() {
 		return players;
 	}
 

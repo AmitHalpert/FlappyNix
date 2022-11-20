@@ -1,13 +1,11 @@
 package entities;
 
 
-import static main.Game.FPS_SET;
-import static main.Game.UPS_SET;
+import static tools.Constants.GameLoopConstants.*;
 import static tools.Constants.PlayerConstants.*;
 import static tools.HelpMethods.*;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import main.Game;
@@ -44,11 +42,6 @@ public class Player extends Entity{
 		initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
 	}
 
-	public void update() {
-		updatePos();
-		updateAnimationTick();
-		setAnimation();
-	}
 
 	public void render(Graphics g) {
 		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset), width * flipW, height, null);
@@ -99,12 +92,9 @@ public class Player extends Entity{
 	@Override
 	public void run() {
 
-
 		double timePerUpdate = 1000000000.0 / UPS_SET;
-
 		long previousTime = System.nanoTime();
 		double deltaU = 0;
-
 
 		while (true) {
 			long currentTime = System.nanoTime();
@@ -113,14 +103,14 @@ public class Player extends Entity{
 
 			previousTime = currentTime;
 
+			// update player
 			if (deltaU >= 1) {
-				update();
+				updatePos();
+				updateAnimationTick();
+				setAnimation();
 				deltaU--;
 			}
-
-
 		}
-
 	}
 
 	private void updatePos() {
@@ -158,7 +148,7 @@ public class Player extends Entity{
 
 
 		if (inAir) {
-			// horizontal tile collision detection
+			// vertical tile collision detection
 			if (CanMoveHere(hitbox.x, hitbox.y + velY, hitbox.width, hitbox.height, lvlData)) {
 				hitbox.y += velY;
 				velY += gravity;
@@ -194,6 +184,14 @@ public class Player extends Entity{
 
 		if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
 			hitbox.x += xSpeed;
+			if(CollisionBetweenPlayers()){
+				hitbox.x -= velX;
+				while (!Game.getPlayers().get(0).getHitbox().intersects(Game.getPlayers().get(1).getHitbox())) hitbox.x += Math.signum(velX);
+				hitbox.x -= Math.signum(velX);
+				velX = 0;
+				x = hitbox.x;
+			}
+
 
 		} else {
 			hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);

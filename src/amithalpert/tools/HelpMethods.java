@@ -7,6 +7,11 @@ import main.Game;
 public class HelpMethods {
 
 
+	public static boolean CollisionBetweenPlayers(){
+		return Game.getPlayers().get(0).getHitbox().intersects(Game.getPlayers().get(1).getHitbox());
+	}
+
+
 	// Checks 4 rect points for collision
 	public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
 		if (!IsTile(x, y, lvlData)){
