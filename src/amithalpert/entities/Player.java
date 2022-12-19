@@ -4,7 +4,6 @@ package entities;
 import static tools.Constants.GameLoopConstants.*;
 import static tools.Constants.PlayerConstants.*;
 import static tools.HelpMethods.*;
-import static tools.HelpMethods.HorizontalCollisionBetweenPlayers;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -15,7 +14,6 @@ import tools.LoadSave;
 
 public class Player extends Entity{
 
-	private Rectangle2D.Float PlayerCollider;
 	private float velX = 0f;
 	private float velY = 0f;
 	private BufferedImage[][] animations;
@@ -42,7 +40,6 @@ public class Player extends Entity{
 		super(x, y, width, height);
 		loadAnimations();
 
-		PlayerCollider = new Rectangle2D.Float(x, y, 19 * Game.SCALE, 7 * Game.SCALE);
 
 		initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
 	}
@@ -52,7 +49,7 @@ public class Player extends Entity{
 		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset), width * flipW, height, null);
 		drawHitbox(g);
 		g.setColor(Color.RED);
-		g.drawRect((int) PlayerCollider.x, (int) PlayerCollider.y, (int) PlayerCollider.width, (int) PlayerCollider.height);
+
 	}
 
 	private void updateAnimationTick() {
@@ -121,6 +118,8 @@ public class Player extends Entity{
 	}
 
 	private void updatePos() {
+
+
 		moving = false;
 
 		if (jump)
@@ -149,23 +148,8 @@ public class Player extends Entity{
 
 
 
-
-
-			if(HorizontalCollisionBetweenPlayers()){
-				hitbox.x -= velX;
-				PlayerCollider.x -= velX;
-			}
-
-			if(VerticalCollisionBetweenPlayers()){
-				PlayerCollider.y -= velY;
-				hitbox.y -= velY;
-			}
-
-
-
-
 		if (!inAir)
-			if (!IsEntityOnFloor(hitbox, lvlData) || !VerticalCollisionBetweenPlayers() || !HorizontalCollisionBetweenPlayers())
+			if (!IsEntityOnFloor(hitbox, lvlData))
 				inAir = true;
 
 
@@ -173,7 +157,6 @@ public class Player extends Entity{
 			// vertical tile collision detection
 			if (CanMoveHere(hitbox.x, hitbox.y + velY, hitbox.width, hitbox.height, lvlData)) {
 				hitbox.y += velY;
-				PlayerCollider.y += velY;
 				velY += gravity;
 				updateXPos(velX);
 			} else {
@@ -206,12 +189,10 @@ public class Player extends Entity{
 	private void updateXPos(float velX) {
 		if (CanMoveHere(hitbox.x + velX, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
 			hitbox.x += velX;
-			PlayerCollider.x += velX;
 
 
 		} else {
 			hitbox.x = GetEntityXPosNextToWall(hitbox, velX);
-			PlayerCollider.x = GetEntityXPosNextToWall(PlayerCollider, velX);
 		}
 
 	}
@@ -240,11 +221,6 @@ public class Player extends Entity{
 		down = false;
 	}
 
-
-
-	public Rectangle2D.Float getPlayerCollider() {
-		return PlayerCollider;
-	}
 
 
 

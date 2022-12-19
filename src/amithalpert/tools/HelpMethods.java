@@ -6,7 +6,7 @@ import main.Game;
 
 public class HelpMethods {
 
-
+	/*
 	public static boolean HorizontalCollisionBetweenPlayers(){
 		return Game.getPlayers().get(0).getHitbox().intersects(Game.getPlayers().get(1).getHitbox());
 	}
@@ -19,6 +19,8 @@ public class HelpMethods {
 			return false;
 		}
 	}
+
+	 */
 
 
 	// Checks 4 rect points for collision

@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import static tools.HelpMethods.*;
 
 import entities.Player;
 import levels.LevelManager;
@@ -45,10 +46,9 @@ public class Game implements Runnable {
 		startGameLoop();
 	}
 
-	private void startGameLoop(){
+	private synchronized void startGameLoop(){
 		gameThread = new Thread(this);
 		gameThread.start();
-
 
 		// start player thread
 		for(Player player : players){
@@ -62,13 +62,24 @@ public class Game implements Runnable {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
 
 
 	public void update() {
 		levelManager.update();
+
+
+		if(players.get(0).getHitbox().intersects(players.get(1).getHitbox().x + 9, players.get(1).getHitbox().y, players.get(1).getHitbox().width - 14, players.get(1).getHitbox().height - (players.get(1).getY() / 2) + 55)){
+			System.out.println("banger");
+
+			players.get(0).setVelY(0);
+			players.get(0).setInAir(false);
+		}
+		else if (!IsEntityOnFloor(players.get(0).getHitbox(), levelManager.getCurrentLevel().getLevelData())){
+			players.get(0).setInAir(true);
+		}
+
+
 	}
 
 	// paint objects (called by paintComponent in gamePanel)
