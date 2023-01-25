@@ -35,7 +35,7 @@ public class Game implements Runnable {
 
 		players = new ArrayList<>();
 		for(int i = 0; i < NUM_PLAYER; i++){
-			players.add(new Player(200 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
+			players.add(new Player(500 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
 			players.get(i).loadLvlData(levelManager.getCurrentLevel().getLevelData());
 		}
 
@@ -51,7 +51,7 @@ public class Game implements Runnable {
 		gameThread = new Thread(this);
 		gameThread.start();
 
-		// start player thread
+		// start players threads
 		for(Player player : players){
 			player.start();
 		}

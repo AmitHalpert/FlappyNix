@@ -30,7 +30,7 @@ public class Player extends Entity{
 
 	// Jumping / Gravity
 	private float gravity = 0.04f * Game.SCALE;
-	private float jumpSpeed = -2.25f * Game.SCALE;
+	private float jumpSpeed = -2.30f * Game.SCALE;
 	private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
 
 	private boolean inAir = false;

@@ -6,24 +6,6 @@ import java.awt.geom.Rectangle2D;
 import main.Game;
 
 public class HelpMethods {
-
-	/*
-	public static boolean HorizontalCollisionBetweenPlayers(){
-		return Game.getPlayers().get(0).getHitbox().intersects(Game.getPlayers().get(1).getHitbox());
-	}
-	public static boolean VerticalCollisionBetweenPlayers(){
-
-		if(Game.getPlayers().get(0).getPlayerCollider().intersects(Game.getPlayers().get(1).getHitbox()) || Game.getPlayers().get(1).getPlayerCollider().intersects(Game.getPlayers().get(0).getHitbox())){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-
-	 */
-
-
 	public static boolean overlap(int x1, int x2, int y1, int y2, int width1, int width2, int height1, int height2) {
 		return x1 < x2 + width2 && x1 + width1 > x2 && y1 < y2 + height2 && y1 + height1 > y2;
 	}
