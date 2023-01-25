@@ -1,6 +1,7 @@
 package main;
 
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import static tools.HelpMethods.*;
 
@@ -69,15 +70,29 @@ public class Game implements Runnable {
 		levelManager.update();
 
 
-		if(players.get(0).getHitbox().intersects(players.get(1).getHitbox().x + 9, players.get(1).getHitbox().y, players.get(1).getHitbox().width - 14, players.get(1).getHitbox().height - (players.get(1).getY() / 2) + 55)){
-			System.out.println("banger");
+		///////////
+		// players jumping in top of each other collision
+		///////////
+		Rectangle2D.Float playerHead0 = new Rectangle2D.Float(players.get(0).getHitbox().x + 9, players.get(0).getHitbox().y, players.get(0).getHitbox().width - 14,players.get(0).getHitbox().height - (players.get(0).getY() / 2) + 55);
+		Rectangle2D.Float playerHead1 = new Rectangle2D.Float(players.get(1).getHitbox().x + 9, players.get(1).getHitbox().y, players.get(1).getHitbox().width - 14,players.get(1).getHitbox().height - (players.get(1).getY() / 2) + 55);
+		// checks for collision between the players heads, to not get stuck mid air
+		if(!playerHead0.intersects(playerHead1)) {
+			// player 0
+			if (players.get(0).getHitbox().intersects(playerHead1)){
+				players.get(0).setVelY(0);
+				players.get(0).setInAir(false);
+			} else if (!IsEntityOnFloor(players.get(0).getHitbox(), levelManager.getCurrentLevel().getLevelData())) {
+				players.get(0).setInAir(true);
+			}
+			// player 1
+			if (players.get(1).getHitbox().intersects(playerHead0)){
+				players.get(1).setVelY(0);
+				players.get(1).setInAir(false);
+			} else if (!IsEntityOnFloor(players.get(1).getHitbox(), levelManager.getCurrentLevel().getLevelData())) {
+				players.get(1).setInAir(true);
+			}
+		}
 
-			players.get(0).setVelY(0);
-			players.get(0).setInAir(false);
-		}
-		else if (!IsEntityOnFloor(players.get(0).getHitbox(), levelManager.getCurrentLevel().getLevelData())){
-			players.get(0).setInAir(true);
-		}
 
 
 	}
