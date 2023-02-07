@@ -7,6 +7,7 @@ import static tools.HelpMethods.*;
 
 import entities.Player;
 import levels.LevelManager;
+import tools.Client;
 
 import static tools.Constants.GameLoopConstants.*;
 
@@ -18,6 +19,7 @@ public class Game implements Runnable {
 	private Thread gameThread;
 	private static ArrayList<Player> players;
 	private LevelManager levelManager;
+	private Client client;
 
 	// global constants
 	public final static int NUM_PLAYER = 2;
@@ -31,6 +33,10 @@ public class Game implements Runnable {
 
 	public Game() {
 		// initializing classes
+		client = new Client("localhost",5000);
+		client.start();
+
+
 		levelManager = new LevelManager(this);
 
 		players = new ArrayList<>();
