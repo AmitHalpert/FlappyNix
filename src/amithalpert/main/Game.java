@@ -2,11 +2,13 @@ package main;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import static tools.HelpMethods.*;
 
 import entities.Player;
 import levels.LevelManager;
+import tools.Server;
 
 import static tools.Constants.GameLoopConstants.*;
 
@@ -18,6 +20,8 @@ public class Game implements Runnable {
 	private Thread gameThread;
 	private static ArrayList<Player> players;
 	private LevelManager levelManager;
+	private Server server;
+
 
 	// global constants
 	public final static int NUM_PLAYER = 2;
@@ -29,10 +33,9 @@ public class Game implements Runnable {
 	public final static int GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH;
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
-	public Game() {
+	public Game(){
 		// initializing classes
 		levelManager = new LevelManager(this);
-
 		players = new ArrayList<>();
 		for(int i = 0; i < NUM_PLAYER; i++){
 			players.add(new Player(500 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
@@ -50,6 +53,8 @@ public class Game implements Runnable {
 	private synchronized void startGameLoop(){
 		gameThread = new Thread(this);
 		gameThread.start();
+		server = new Server(5000);
+		server.start();
 
 		// start players threads
 		for(Player player : players){
@@ -141,6 +146,7 @@ public class Game implements Runnable {
 				deltaF--;
 			}
 
+			/*
 			if (System.currentTimeMillis() - lastCheck >= 1000) {
 				lastCheck = System.currentTimeMillis();
 				System.out.println("FPS: " + frames + " | UPS: " + updates);
@@ -148,6 +154,8 @@ public class Game implements Runnable {
 				updates = 0;
 
 			}
+
+			 */
 		}
 
 	}
