@@ -8,6 +8,7 @@ import static tools.HelpMethods.*;
 
 import entities.Player;
 import levels.LevelManager;
+import tools.Coords;
 import tools.Server;
 
 import static tools.Constants.GameLoopConstants.*;
@@ -34,11 +35,16 @@ public class Game implements Runnable {
 	public final static int GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
 
 	public Game(){
+
+		server = new Server(5000);
+		server.start();
+
+
 		// initializing classes
 		levelManager = new LevelManager(this);
 		players = new ArrayList<>();
-		for(int i = 0; i < NUM_PLAYER; i++){
-			players.add(new Player(500 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
+		for (int i = 0; i < NUM_PLAYER; i++) {
+			players.add(new Player(200 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
 			players.get(i).loadLvlData(levelManager.getCurrentLevel().getLevelData());
 		}
 
@@ -48,13 +54,12 @@ public class Game implements Runnable {
 
 		// starting gameThread
 		startGameLoop();
+
 	}
 
 	private synchronized void startGameLoop(){
 		gameThread = new Thread(this);
 		gameThread.start();
-		server = new Server(5000);
-		server.start();
 
 		// start players threads
 		for(Player player : players){
@@ -68,6 +73,9 @@ public class Game implements Runnable {
 				e.printStackTrace();
 			}
 		}
+
+
+
 	}
 
 
@@ -97,8 +105,6 @@ public class Game implements Runnable {
 				players.get(1).setInAir(true);
 			}
 		}
-
-
 
 	}
 
@@ -133,6 +139,10 @@ public class Game implements Runnable {
 			deltaU += (currentTime - previousTime) / timePerUpdate;
 			deltaF += (currentTime - previousTime) / timePerFrame;
 			previousTime = currentTime;
+
+			Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
+
+			server.setWriteObject(coords);
 
 			if (deltaU >= 1) {
 				update();

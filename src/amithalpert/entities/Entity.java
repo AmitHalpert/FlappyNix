@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
-public abstract class Entity extends Thread {
+public abstract class Entity extends Thread{
 
 	protected float x;
 	protected float y;

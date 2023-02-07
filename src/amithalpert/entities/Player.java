@@ -8,11 +8,12 @@ import static tools.HelpMethods.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import main.Game;
 import tools.LoadSave;
 
-public class Player extends Entity{
+public class Player extends Entity implements Serializable {
 
 	private float velX = 0f;
 	private float velY = 0f;
