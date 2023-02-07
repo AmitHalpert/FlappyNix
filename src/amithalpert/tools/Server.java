@@ -7,10 +7,6 @@ public class Server extends Thread {
     //initialize socket and input stream
     private Socket socket = null;
     private ServerSocket server = null;
-    private DataInputStream in = null;
-    private DataOutputStream output = null;
-    private BufferedReader br = null;
-    private String read = "", write = "";
     private Coords WriteObject;
     private int port;
 
@@ -41,34 +37,13 @@ public class Server extends Thread {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             System.out.println("gggg");
 
-            // reads message from client until "Over" is sent
-            objectOutputStream.writeObject(WriteObject);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-            /*
-            while(!read.equals("stop")){
-                try
-                {
-
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
+            while (true){
+                objectOutputStream.writeObject(WriteObject);
             }
-            System.out.println("Closing connection");
-            in.close();
-            socket.close();
-            server.close();
-        } catch (IOException e) {
+
+        } catch (IOException | RuntimeException e) {
             throw new RuntimeException(e);
         }
-
-             */
-
 
     }
 
@@ -76,19 +51,6 @@ public class Server extends Thread {
 
     public void setWriteObject(Coords writeObject) {
         WriteObject = writeObject;
-    }
-
-
-    public String getRead() {
-        return read;
-    }
-
-    public String getWrite() {
-        return write;
-    }
-
-    public void setWrite(String write) {
-        this.write = write;
     }
 
 }
