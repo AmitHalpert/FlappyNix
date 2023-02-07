@@ -81,8 +81,6 @@ public class Game implements Runnable {
 
 	public void update() {
 		levelManager.update();
-
-
 		///////////
 		// players jumping in top of each other collision
 		///////////
@@ -140,10 +138,6 @@ public class Game implements Runnable {
 			deltaF += (currentTime - previousTime) / timePerFrame;
 			previousTime = currentTime;
 
-			Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
-
-			server.setWriteObject(coords);
-
 			if (deltaU >= 1) {
 				update();
 				updates++;
@@ -151,6 +145,8 @@ public class Game implements Runnable {
 			}
 
 			if (deltaF >= 1) {
+				Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
+				server.setWriteObject(coords);
 				gamePanel.repaint();
 				frames++;
 				deltaF--;
