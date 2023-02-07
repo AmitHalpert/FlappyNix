@@ -57,6 +57,8 @@ public class Game implements Runnable {
 		gameThread = new Thread(this);
 		gameThread.start();
 
+
+
 		// start players threads
 		for(Player player : players){
 			player.start();
@@ -69,12 +71,17 @@ public class Game implements Runnable {
 				e.printStackTrace();
 			}
 		}
+
+
 	}
 
 
 	public void update() {
 		levelManager.update();
 
+
+
+		/*
 
 		///////////
 		// players jumping in top of each other collision
@@ -98,6 +105,8 @@ public class Game implements Runnable {
 				players.get(1).setInAir(true);
 			}
 		}
+
+		 */
 
 
 
@@ -129,6 +138,10 @@ public class Game implements Runnable {
 		double deltaF = 0;
 
 		while (true) {
+
+			players.get(0).getHitbox().x = client.getCoords().x;
+			players.get(0).getHitbox().y = client.getCoords().y;
+
 			long currentTime = System.nanoTime();
 
 			deltaU += (currentTime - previousTime) / timePerUpdate;

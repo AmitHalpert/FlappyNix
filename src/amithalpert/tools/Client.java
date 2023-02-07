@@ -5,6 +5,7 @@ import java.net.Socket;
 
 public class Client extends Thread {
 
+    private Coords coords;
     private Socket socket;
     private int port;
     private String hostname;
@@ -30,9 +31,7 @@ public class Client extends Thread {
 
 
             while (true){
-                Coords coords = (Coords) objectInputStream.readObject();
-                System.out.println("X:" + coords.x);
-                System.out.println("Y:" + coords.y);
+                coords = (Coords) objectInputStream.readObject();
             }
 
 
@@ -42,6 +41,15 @@ public class Client extends Thread {
             throw new RuntimeException(e);
         }
 
-
     }
+
+    public Coords getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
+    }
+
+
 }
