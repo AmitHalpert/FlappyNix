@@ -5,6 +5,8 @@ import java.net.Socket;
 
 public class Client extends Thread {
 
+
+    public Coords WriteObject;
     private Coords coords;
     private Socket socket;
     private int port;
@@ -31,18 +33,21 @@ public class Client extends Thread {
 
 
             while (true){
+                objectOutputStream.writeObject(WriteObject);
                 coords = (Coords) objectInputStream.readObject();
             }
 
 
-        }catch (IOException e){
+        }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
     }
 
+
+    public void setWriteObject(Coords writeObject) {
+        WriteObject = writeObject;
+    }
     public Coords getCoords() {
         return coords;
     }

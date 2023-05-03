@@ -8,6 +8,7 @@ import static tools.HelpMethods.*;
 import entities.Player;
 import levels.LevelManager;
 import tools.Client;
+import tools.Coords;
 
 import static tools.Constants.GameLoopConstants.*;
 
@@ -35,7 +36,6 @@ public class Game implements Runnable {
 		// initializing classes
 		client = new Client("localhost",5000);
 		client.start();
-
 
 		levelManager = new LevelManager(this);
 
@@ -139,8 +139,6 @@ public class Game implements Runnable {
 
 		while (true) {
 
-			players.get(0).getHitbox().x = client.getCoords().x;
-			players.get(0).getHitbox().y = client.getCoords().y;
 
 			long currentTime = System.nanoTime();
 
@@ -155,6 +153,8 @@ public class Game implements Runnable {
 			}
 
 			if (deltaF >= 1) {
+				Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
+				client.setWriteObject(coords);
 				gamePanel.repaint();
 				frames++;
 				deltaF--;
