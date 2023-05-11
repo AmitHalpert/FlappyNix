@@ -5,13 +5,13 @@ import tools.Server;
 
 import java.util.ArrayList;
 
-public class Game implements Runnable {
+public class MultiplayerHandler implements Runnable {
 
 
     private Thread gameThread;
     public  ArrayList<Server> servers;
 
-    public Game() {
+    public MultiplayerHandler() {
 
 
         servers = new ArrayList<>();
@@ -36,6 +36,22 @@ public class Game implements Runnable {
 
     }
 
+
+    public void update(){
+        if(servers.get(0).coords != null && servers.get(1).coords != null) {
+
+            Coords coords0 = new Coords(servers.get(0).coords.x, servers.get(0).coords.y);
+            servers.get(1).setWriteObject(coords0);
+
+
+            Coords coords1 = new Coords(servers.get(1).coords.x, servers.get(1).coords.y);
+            servers.get(0).setWriteObject(coords1);
+
+        }
+    }
+
+
+
     @Override
     public void run() {
 
@@ -52,8 +68,6 @@ public class Game implements Runnable {
         double deltaF = 0;
 
         while (true) {
-
-
             long currentTime = System.nanoTime();
 
             deltaU += (currentTime - previousTime) / timePerUpdate;
@@ -61,6 +75,7 @@ public class Game implements Runnable {
             previousTime = currentTime;
 
             if (deltaU >= 1) {
+                update();
                 updates++;
                 deltaU--;
             }
@@ -72,10 +87,6 @@ public class Game implements Runnable {
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                if(servers.get(0).coords != null && servers.get(1).coords != null) {
-                    System.out.println("PLAYER 0" + servers.get(0).coords.x);
-                    System.out.println("PLAYER 1" + servers.get(1).coords.x);
-                }
                 frames = 0;
                 updates = 0;
 
