@@ -15,6 +15,9 @@ import static tools.Constants.GameLoopConstants.*;
 
 public class Game implements Runnable {
 
+	////////////////////////////////////
+	public final static int PORT = 5000;
+	////////////////////////////////////
 	private Desktop desktop;
 	private GamePanel gamePanel;
 	private Thread gameThread;
@@ -34,7 +37,7 @@ public class Game implements Runnable {
 
 	public Game() {
 		// initializing classes
-		client = new Client("localhost",5000);
+		client = new Client("localhost",PORT);
 		client.start();
 
 		levelManager = new LevelManager(this);
@@ -81,7 +84,26 @@ public class Game implements Runnable {
 
 
 
-		/*
+		if(PORT == 5000){
+			Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
+			client.setWriteObject(coords);
+
+			if(client.getCoords() != null) {
+				players.get(1).getHitbox().x = client.getCoords().x;
+				players.get(1).getHitbox().y = client.getCoords().y;
+			}
+
+		}else if (PORT == 6000){
+			Coords coords = new Coords(players.get(1).getHitbox().x, players.get(1).getHitbox().y);
+			client.setWriteObject(coords);
+
+			if(client.getCoords() != null) {
+				players.get(0).getHitbox().x = client.getCoords().x;
+				players.get(0).getHitbox().y = client.getCoords().y;
+			}
+		}
+
+
 
 		///////////
 		// players jumping in top of each other collision
@@ -105,9 +127,6 @@ public class Game implements Runnable {
 				players.get(1).setInAir(true);
 			}
 		}
-
-		 */
-
 
 
 	}
@@ -153,8 +172,6 @@ public class Game implements Runnable {
 			}
 
 			if (deltaF >= 1) {
-				Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
-				client.setWriteObject(coords);
 				gamePanel.repaint();
 				frames++;
 				deltaF--;
