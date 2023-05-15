@@ -47,8 +47,8 @@ public class Player extends Entity{
 
 	public void render(Graphics g) {
 		g.drawImage(animations[playerAction][aniIndex], (int) (hitbox.x - xDrawOffset) + flipX, (int) (hitbox.y - yDrawOffset), width * flipW, height, null);
-		drawHitbox(g);
-		g.setColor(Color.RED);
+		//drawHitbox(g);
+		//g.setColor(Color.RED);
 
 	}
 

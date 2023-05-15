@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import static tools.HelpMethods.*;
 
+import entities.Entity;
 import entities.Player;
 import levels.LevelManager;
 import tools.Client;
@@ -24,6 +25,7 @@ public class Game implements Runnable {
 	private static ArrayList<Player> players;
 	private LevelManager levelManager;
 	private Client client;
+	private Rectangle2D.Float finishBox;
 
 	// global constants
 	public final static int NUM_PLAYER = 2;
@@ -42,6 +44,8 @@ public class Game implements Runnable {
 
 		levelManager = new LevelManager(this);
 
+		finishBox = new Rectangle2D.Float(1620,250,64 * SCALE, 40 * SCALE);
+
 		players = new ArrayList<>();
 		for(int i = 0; i < NUM_PLAYER; i++){
 			players.add(new Player(500 + i * 90, 200, (int) (64 * SCALE), (int) (40 * SCALE)));
@@ -59,8 +63,6 @@ public class Game implements Runnable {
 	private synchronized void startGameLoop(){
 		gameThread = new Thread(this);
 		gameThread.start();
-
-
 
 		// start players threads
 		for(Player player : players){
@@ -83,24 +85,10 @@ public class Game implements Runnable {
 		levelManager.update();
 
 
-
-		if(PORT == 5000){
-			Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
-			client.setWriteObject(coords);
-
-			if(client.getCoords() != null) {
-				players.get(1).getHitbox().x = client.getCoords().x;
-				players.get(1).getHitbox().y = client.getCoords().y;
-			}
-
-		}else if (PORT == 6000){
-			Coords coords = new Coords(players.get(1).getHitbox().x, players.get(1).getHitbox().y);
-			client.setWriteObject(coords);
-
-			if(client.getCoords() != null) {
-				players.get(0).getHitbox().x = client.getCoords().x;
-				players.get(0).getHitbox().y = client.getCoords().y;
-			}
+		// collision for the Finish line
+		if(players.get(0).getHitbox().intersects(finishBox) || players.get(1).getHitbox().intersects(finishBox)){
+			System.out.println("YOU WON");
+			System.exit(0);
 		}
 
 
@@ -131,12 +119,36 @@ public class Game implements Runnable {
 
 	}
 
+	public void updateServer(){
+		if(PORT == 5000){
+			Coords coords = new Coords(players.get(0).getHitbox().x, players.get(0).getHitbox().y);
+			client.setWriteObject(coords);
+
+			if(client.getCoords() != null) {
+				players.get(1).getHitbox().x = client.getCoords().x;
+				players.get(1).getHitbox().y = client.getCoords().y;
+			}
+
+		}else if (PORT == 6000){
+			Coords coords = new Coords(players.get(1).getHitbox().x, players.get(1).getHitbox().y);
+			client.setWriteObject(coords);
+
+			if(client.getCoords() != null) {
+				players.get(0).getHitbox().x = client.getCoords().x;
+				players.get(0).getHitbox().y = client.getCoords().y;
+			}
+		}
+	}
+
 	// paint objects (called by paintComponent in gamePanel)
 	public void render(Graphics g) {
 		levelManager.draw(g);
+
 		for(Player player : players){
 			player.render(g);
 		}
+		g.setColor(Color.RED);
+		g.drawRect((int) finishBox.x , (int) finishBox.y, (int) finishBox.width ,(int) finishBox.height);
 	}
 
 
@@ -166,6 +178,7 @@ public class Game implements Runnable {
 			previousTime = currentTime;
 
 			if (deltaU >= 1) {
+				updateServer();
 				update();
 				updates++;
 				deltaU--;
